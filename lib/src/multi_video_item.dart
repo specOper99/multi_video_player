@@ -16,7 +16,8 @@ class MultiVideoItem extends StatefulWidget {
   Map<String, String>? httpHeaders;
   VideoFormat? formatHint;
   String? package;
-  Widget Function(BuildContext context, VideoPlayerController controller)?
+  Widget Function(
+          BuildContext context, VideoPlayerController controller, int index)?
       itemBuilder;
   Widget Function(BuildContext context)? loadingBuilder;
   Widget Function(BuildContext context)? controlsBuilder;
@@ -99,7 +100,7 @@ class _MultiVideoItemState extends State<MultiVideoItem> {
           ? widget.loadingBuilder?.call(context) ??
               const Center(child: CircularProgressIndicator())
           : _controller.value.isInitialized
-              ? widget.itemBuilder?.call(context, _controller) ??
+              ? widget.itemBuilder?.call(context, _controller, widget.index) ??
                   Center(
                     child: AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,

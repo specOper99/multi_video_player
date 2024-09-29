@@ -35,7 +35,8 @@ class MultiVideoPlayer extends StatefulWidget {
   Future<dynamic> Function(dynamic videoSource)? videoSourcesParser;
 
   /// itemBuilder returns the video player controller to customize the video player
-  Widget Function(BuildContext context, VideoPlayerController controller)?
+  Widget Function(
+          BuildContext context, VideoPlayerController controller, int index)?
       itemBuilder;
 
   /// loadingBuilder returns the loading widget to customize the loading widget
