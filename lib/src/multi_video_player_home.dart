@@ -32,6 +32,16 @@ class MultiVideoPlayer extends StatefulWidget {
   double height;
   double width;
 
+  /// itemBuilder returns the video player controller to customize the video player
+  Widget Function(BuildContext context, VideoPlayerController controller)?
+      itemBuilder;
+
+  /// loadingBuilder returns the loading widget to customize the loading widget
+  Widget Function(BuildContext context)? loadingBuilder;
+
+  /// controlsBuilder returns the controls widget to customize the controls widget
+  Widget Function(BuildContext context)? controlsBuilder;
+
   /// getCurrentVideoController return the current playing video controller
   Function(VideoPlayerController? videoPlayerController)?
       getCurrentVideoController;
@@ -56,6 +66,9 @@ class MultiVideoPlayer extends StatefulWidget {
     required this.videoSourceList,
     required this.height,
     required this.width,
+    this.itemBuilder,
+    this.loadingBuilder,
+    this.controlsBuilder,
     this.scrollDirection = Axis.horizontal,
     this.preloadPagesCount = 1,
     this.videoPlayerOptions,
@@ -78,6 +91,9 @@ class MultiVideoPlayer extends StatefulWidget {
     required this.videoSourceList,
     required this.height,
     required this.width,
+    this.itemBuilder,
+    this.loadingBuilder,
+    this.controlsBuilder,
     this.scrollDirection = Axis.horizontal,
     this.preloadPagesCount = 1,
     this.videoPlayerOptions,
@@ -99,6 +115,9 @@ class MultiVideoPlayer extends StatefulWidget {
     required this.videoSourceList,
     required this.height,
     required this.width,
+    this.itemBuilder,
+    this.loadingBuilder,
+    this.controlsBuilder,
     this.scrollDirection = Axis.horizontal,
     this.preloadPagesCount = 1,
     this.videoPlayerOptions,
@@ -181,6 +200,9 @@ class _MultiVideoPlayerState extends State<MultiVideoPlayer> {
       onDispose: (int index) {
         videosList[index].videoPlayerController = null;
       },
+      itemBuilder: widget.itemBuilder,
+      loadingBuilder: widget.loadingBuilder,
+      controlsBuilder: widget.controlsBuilder,
     );
   }
 

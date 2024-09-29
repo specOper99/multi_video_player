@@ -16,6 +16,10 @@ class MultiVideoItem extends StatefulWidget {
   Map<String, String>? httpHeaders;
   VideoFormat? formatHint;
   String? package;
+  Widget Function(BuildContext context, VideoPlayerController controller)?
+      itemBuilder;
+  Widget Function(BuildContext context)? loadingBuilder;
+  Widget Function(BuildContext context)? controlsBuilder;
   bool showControlsOverlay;
   bool showVideoProgressIndicator;
   bool show = true;
@@ -26,6 +30,9 @@ class MultiVideoItem extends StatefulWidget {
     required this.index,
     required this.onInit,
     required this.onDispose,
+    this.itemBuilder,
+    this.loadingBuilder,
+    this.controlsBuilder,
     this.videoPlayerOptions,
     this.closedCaptionFile,
     this.httpHeaders,
@@ -53,7 +60,7 @@ class _MultiVideoItemState extends State<MultiVideoItem> {
   /// initializes videos
   void _initializeVideo() {
     if (widget.sourceType == VideoSource.network) {
-      _controller = VideoPlayerController.network(
+      _controller = VideoPlayerController.networkUrl(
         widget.videoSource,
         videoPlayerOptions: widget.videoPlayerOptions,
         closedCaptionFile: widget.closedCaptionFile,
@@ -89,26 +96,29 @@ class _MultiVideoItemState extends State<MultiVideoItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? widget.loadingBuilder?.call(context) ??
+              const Center(child: CircularProgressIndicator())
           : _controller.value.isInitialized
-              ? Center(
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: <Widget>[
-                        VideoPlayer(_controller),
-                        widget.showControlsOverlay
-                            ? _ControlsOverlay(controller: _controller)
-                            : const SizedBox.shrink(),
-                        widget.showVideoProgressIndicator
-                            ? VideoProgressIndicator(_controller,
-                                allowScrubbing: true)
-                            : const SizedBox.shrink(),
-                      ],
+              ? widget.itemBuilder?.call(context, _controller) ??
+                  Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: <Widget>[
+                          VideoPlayer(_controller),
+                          widget.showControlsOverlay
+                              ? widget.controlsBuilder?.call(context) ??
+                                  _ControlsOverlay(controller: _controller)
+                              : const SizedBox.shrink(),
+                          widget.showVideoProgressIndicator
+                              ? VideoProgressIndicator(_controller,
+                                  allowScrubbing: true)
+                              : const SizedBox.shrink(),
+                        ],
+                      ),
                     ),
-                  ),
-                )
+                  )
               : const SizedBox.shrink(),
     );
   }
