@@ -32,7 +32,7 @@ class MultiVideoPlayer extends StatefulWidget {
   double height;
   double width;
 
-  dynamic Function(dynamic videoSource)? videoSourcesParser;
+  Future<dynamic> Function(dynamic videoSource)? videoSourcesParser;
 
   /// itemBuilder returns the video player controller to customize the video player
   Widget Function(BuildContext context, VideoPlayerController controller)?
@@ -222,7 +222,7 @@ class _MultiVideoPlayerState extends State<MultiVideoPlayer> {
   Future<void> _generateVideoList() async {
     await Future.forEach(widget.videoSourceList, (source) async {
       videosList.add(MultiVideo(
-        videoSource: widget.videoSourcesParser?.call(source) ?? source,
+        videoSource: (await widget.videoSourcesParser?.call(source)) ?? source,
       ));
     });
     if (mounted) {
