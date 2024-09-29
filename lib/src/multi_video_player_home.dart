@@ -221,8 +221,14 @@ class _MultiVideoPlayerState extends State<MultiVideoPlayer> {
 
   Future<void> _generateVideoList() async {
     await Future.forEach(widget.videoSourceList, (source) async {
+      if (widget.videoSourcesParser != null) {
+        source = await widget.videoSourcesParser!(source);
+      }
+      if (source == null) {
+        return;
+      }
       videosList.add(MultiVideo(
-        videoSource: (await widget.videoSourcesParser?.call(source)) ?? source,
+        videoSource: source,
       ));
     });
     if (mounted) {
